@@ -48,8 +48,21 @@ Push to and configure Heroku:
 
 Create Triggers in Zendesk
 --------------------------
+*Gear > Triggers (found under "Business Rules")*
+
+ * Send SMS to user on ticket update
+ * Re-open updated tickets
 
 
 Create a new SMS Target in Zendesk
 ----------------------------------
+*Gear > Extensions (found under "Settings") > Targets*
 
+ * Outbound SMS target
+   Title: Outbound SMS target
+   URL:
+
+        http://your-app.example.com/outgoing?To={{ticket.requester.phone}}&Body={{ticket.latest_public_comment}}
+
+   Method: POST
+   Attribute Name: Extra
