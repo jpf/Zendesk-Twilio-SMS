@@ -50,6 +50,16 @@ Create Triggers in Zendesk
 --------------------------
 *Gear > Triggers (found under "Business Rules")*
 
+ * Create a new trigger called "SMS user on Ticket Update".
+ * Configure this trigger to meet all the following conditions:
+   * Ticket is: Updated
+   * Comment is: Present, and requester can see the comment
+   * Current user: is not: "SMS User"
+ * Configure this trigger to perform these actions:
+   * Notify target: Outbound SMS target
+
+Other triggers to consider implementing:
+
  * Send SMS to user on ticket update
  * Re-open updated tickets
 
