@@ -115,6 +115,9 @@ Push to and configure Heroku:
 
  3. Configure your Heroku app with the settings from above
 
+        # NOTE: While this command should work, it doesn't seem to.
+        # I suggest using the commands below if you're having trouble
+        # using this command
         heroku config:set `cat .env | tr "\n" ' '`
 
      Which is the same thing as doing:
