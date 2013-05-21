@@ -158,6 +158,10 @@ end
 # FIXME: Consider using the "Extra" field for passing along information, to allow for things like auto-responders and so on.
 post '/outgoing' do
   $log.debug("Received for outgoing SMS: #{params.inspect}")
+  expect = 'Test message from Zendesk sent on: '
+  if params.has_key?('Extra') and params['Extra'].start_with?(expect)
+    halt 200, 'Hello Zendesk'
+  end
   msg = {
     :from => settings.twilio_from_number,
     :to => params['To'],
