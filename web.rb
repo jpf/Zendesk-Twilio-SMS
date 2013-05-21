@@ -155,6 +155,7 @@ post '/sms' do
   "<Response></Response>"
 end
 
+# FIXME: Consider using the "Extra" field for passing along information, to allow for things like auto-responders and so on.
 post '/outgoing' do
   $log.debug("Received for outgoing SMS: #{params.inspect}")
   msg = {

@@ -1,5 +1,5 @@
 ENV['RACK_ENV'] = 'test'
-require 'web'  # <-- your sinatra app
+require './web'  # <-- your sinatra app
 require 'rspec'
 require 'rack/test'
 
@@ -56,6 +56,25 @@ describe 'web.rb' do
 
     post '/outgoing', {'To' => 'ToNumber', 'Body' => 'MessageBody'}
   end
+
+  it "prefers the JSON contents of the 'Extra' POST parameter over 'Body' and 'To' parameters" do
+    want = {
+      :from => "+14155551212",
+      :to => "JSON_ToNumber",
+      :body => "JSON_MessageBody"}
+    as_json = '{"To": "JSON_ToNumber", "Body": "JSON_MessageBody"}'
+    @twilio_client.account.sms.messages.should_receive(:create).with(want)
+    app.settings.stub(:twilio_client).and_return(@twilio_client)
+    app.settings.stub(:twilio_from_number).and_return('+14155551212')
+
+    post '/outgoing', {'To' => 'ToNumber', 'Body' => 'MessageBody'}
+  end
+
+  it "supports the ZenDesk test message" do
+    message = "Test message from Zendesk sent on: 2013-04-08 18:54:56 UTC"
+    False
+  end
+
   # properly handles an empty body
   # properly handles no phone number
   # properly handles a bad phone number

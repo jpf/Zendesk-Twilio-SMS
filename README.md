@@ -135,3 +135,19 @@ Push to and configure Heroku:
         heroku open
 
  5. If you see "Hello." in your web browser, then try sending your Twilio phone number an SMS.
+
+Running tests:
+--------------
+
+ 1. Switch to Ruby 2.0 in RVM:
+
+        rvm install 2.0.0
+        rvm use 2.0.0
+
+ 2. Install dependencies:
+
+        bundle install
+
+ 3. Run tests:
+
+        bundle exec rake spec

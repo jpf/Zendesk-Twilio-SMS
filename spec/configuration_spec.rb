@@ -1,6 +1,6 @@
 ENV['RACK_ENV'] = 'test'
-require 'web'
 require 'rspec'
+require './web'
 require 'twilio-ruby'
 
 vars = ['TWILIO_ACCOUNT_SID', 'TWILIO_AUTH_TOKEN', 'TWILIO_FROM_NUMBER',
