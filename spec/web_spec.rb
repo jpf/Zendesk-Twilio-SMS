@@ -67,12 +67,13 @@ describe 'web.rb' do
     app.settings.stub(:twilio_client).and_return(@twilio_client)
     app.settings.stub(:twilio_from_number).and_return('+14155551212')
 
-    post '/outgoing', {'To' => 'ToNumber', 'Body' => 'MessageBody'}
+    post '/outgoing', {'To' => 'ToNumber', 'Body' => 'MessageBody', 'Extra' => as_json}
   end
 
   it "supports the ZenDesk test message" do
     message = "Test message from Zendesk sent on: 2013-04-08 18:54:56 UTC"
-    False
+    post '/outgoing', {'Extra' => message}
+    last_response.status == 200
   end
 
   # properly handles an empty body
