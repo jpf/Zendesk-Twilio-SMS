@@ -3,6 +3,7 @@ require 'sinatra'
 require 'logger'
 require 'zendesk_api'
 require 'twilio-ruby'
+require 'json'
 
 $stdout.sync = true
 
@@ -162,10 +163,21 @@ post '/outgoing' do
   if params.has_key?('Extra') and params['Extra'].start_with?(expect)
     halt 200, 'Hello Zendesk'
   end
+  to = params['To']
+  body = params['Body']
+  if params.has_key?('Extra')
+    extra = JSON.parse(params['Extra'])
+    if extra.has_key?('To')
+      to = extra['To']
+    end
+    if extra.has_key?('Body')
+      body = extra['Body']
+    end
+  end
   msg = {
     :from => settings.twilio_from_number,
-    :to => params['To'],
-    :body => params['Body']
+    :to => to,
+    :body => body
   }
   settings.twilio_client.account.sms.messages.create(msg)
 end
