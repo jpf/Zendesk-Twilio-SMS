@@ -123,14 +123,6 @@ class Configuration
   end
 end
 
-configure :development do
-  $log.level = Logger::DEBUG
-end
-
-configure :test do
-  $log.level = Logger::ERROR
-end
-
 configure :production, :development do
   $log.info('Running configuration')
   configuration = Configuration.new(ENV)
