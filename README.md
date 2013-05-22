@@ -116,7 +116,7 @@ Create a new SMS Target in Zendesk
 Create Triggers in Zendesk
 --------------------------
 
- * *Gear > Triggers (found under "Business Rules")
+ * *Gear > Triggers (found under "Business Rules")*
  * Click "add trigger"
  * Give the trigger the title: "SMS user on Ticket Update".
  * Configure this trigger to meet all the following conditions:
