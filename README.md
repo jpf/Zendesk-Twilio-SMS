@@ -6,11 +6,11 @@ Basic steps to get bidirectional SMS support in Zendesk via Twilio:
  1. If you don't have one already, create a Zendesk account.
  2. Add a new user to your account. Call this user "SMS User"
  3. Create a new Heroku app
- 4. Create a new SMS Target in Zendesk
- 5. Create a new Trigger in Zendesk
- 6. Buy a new Twilio number and configure it
- 7. Set up your .env file
- 8. Push code to Heroku
+ 4. Buy a new Twilio number and configure it
+ 5. Set up your .env file
+ 6. Push code to Heroku
+ 7. Create a new SMS Target in Zendesk
+ 8. Create a new Trigger in Zendesk
 
 Add a user named "SMS User" to your account
 -------------------------------------------
@@ -19,7 +19,6 @@ Add a user named "SMS User" to your account
  * Select the "User" option
  * Set the name as "SMS User" and give it a working email on your domain.
    (I suggest using your.email.address+sms@example.com)
- * (does this need to be an admin user?)
  * Check your email for the confirmaion link for the SMS user. Click the link.
  * Set the password for the SMS user.
  * Log back in to Zendesk with a user that has administration privileges.
@@ -33,41 +32,6 @@ Create a new Heroku app
  1. Create a new Heroku app
 
         heroku create
-
-Create a new SMS Target in Zendesk
-----------------------------------
- * *Gear > Extensions (found under "Settings") > Targets*
- * Select "URL target"
- * Configure the URL target as follows:
-   Title: Outbound SMS target
-   URL:
-
-        http://your-app.example.com/outgoing?To={{ticket.requester.phone}}&Body={{ticket.latest_public_comment}}
-
-   Method: POST
-   Attribute Name: Details
-   Basic Authentication: (leave blank)
- * Change the dropdown from "Test Target" to "Create target"
- * Click "Submit"
-
-Create Triggers in Zendesk
---------------------------
-
- * *Gear > Triggers (found under "Business Rules")
- * Click "add trigger"
- * Give the trigger the title: "SMS user on Ticket Update".
- * Configure this trigger to meet all the following conditions:
-   * Ticket is: Updated
-   * Comment is: Present, and requester can see the comment
-   * Current user: is not: "SMS User"
- * Configure this trigger to perform these actions:
-   * Notify target: Outbound SMS target
- * Click "Create trigger"
-
-Other triggers to consider implementing:
-
- * Send SMS to user on ticket update
- * Re-open updated tickets
 
 Buy a new Twilio number and configure it
 ----------------------------------------
@@ -109,11 +73,7 @@ Push to and configure Heroku:
 
     If you don't get any errors then:
 
- 2. Push the code to Heroku
-
-        git push heroku master
-
- 3. Configure your Heroku app with the settings from above
+ 2. Configure your Heroku app with the settings from above
 
         # NOTE: While this command should work, it doesn't seem to.
         # I suggest using the commands below if you're having trouble
@@ -130,14 +90,79 @@ Push to and configure Heroku:
         heroku config:set ZENDESK_USERNAME="" 
         heroku config:set ZENDESK_PASSWORD=""
 
+ 3. Push the code to Heroku
+
+        git push heroku master
+
  4. Open your new Heroku app
 
         heroku open
 
- 5. If you see "Hello." in your web browser, then try sending your Twilio phone number an SMS.
+ 5. If you see "Hello." in your web browser, then continue on to the next step.
+    If you don't see "Hello." then you have an error.
 
-Running tests:
---------------
+Create a new SMS Target in Zendesk
+----------------------------------
+ * *Gear > Extensions (found under "Settings") > Targets*
+ * Select "URL target"
+ * Configure the URL target as follows:
+   Title: Outbound SMS target
+   URL:
+
+        http://your-app.example.com/outgoing
+
+   Method: POST
+   Attribute Name: Extra
+   Basic Authentication: (leave blank)
+ * Leave the dropdown set to "Test Target"
+ * Click "Submit"
+ * Make sure you get a message that starts with "The message was successfully sent."
+ * Change the dropdown from "Test Target" to "Create target"
+ * Click "Submit"
+
+Create Triggers in Zendesk
+--------------------------
+
+ * *Gear > Triggers (found under "Business Rules")
+ * Click "add trigger"
+ * Give the trigger the title: "SMS user on Ticket Update".
+ * Configure this trigger to meet all the following conditions:
+   * Ticket is: Updated
+   * Comment is: Present, and requester can see the comment
+   * Current user: is not: "SMS User"
+ * Configure this trigger to perform these actions:
+   * Notify target: Outbound SMS target
+   * This field supports Dynamic Content:
+
+        {
+        "To": "{{ticket.requester.phone}}",
+        "Body": "{{ticket.latest_public_comment}}"
+        }
+
+ * Click "Create trigger"
+
+Other triggers to consider implementing:
+
+ * Send SMS to user on ticket update
+ * Re-open updated tickets
+
+Making sure it all works:
+-------------------------
+
+ * Send an SMS to the phone number you configured. (I suggest sending the word "test")
+ * In Zendesk:
+   * Click on the "Views" button (it looks like three stacked lines).
+   * Click on "All unsolved tickets"
+ * You should see your test message as a ticket.
+ * Click on the ticket
+ * Click "take it" to assign the ticket to yourself
+ * Reply to the ticket
+ * Click "Submit as New"
+ * You should receive an SMS with the reply you made to the ticket
+ * Celebrate! It works!
+
+Apendex: Running unit tests:
+----------------------------
 
  1. Switch to Ruby 2.0 in RVM:
 
